@@ -180,6 +180,31 @@ A proposta é implementar testes para listagem inicial, cadastro com atualizaç�
 
 A suíte existente em `e2e/` e o ambiente `compose.e2e.yml` continuam destinados ao Laboratório REST. Para testar a nova interface, prepare uma configuração e um ambiente com banco isolado para a atividade. Consulte [atividade/README.md](atividade/README.md) para os comportamentos esperados e os seletores disponíveis.
 
+### Executar os testes E2E da atividade
+
+Os testes da interface de cadastro de alunos ficam em `e2e-atividade/`, com configuração própria em `playwright.atividade.config.ts` e ambiente isolado em `compose.atividade.e2e.yml` (projeto Docker `atividade-e2e`, banco temporário `atividade_e2e` e porta local `18081`).
+
+Na raiz do projeto, com o Docker em execução:
+
+```powershell
+npm ci
+npx playwright install chromium
+npm run test:atividade
+```
+
+Outros comandos disponíveis:
+
+- `npm run test:atividade -- --headed` — executa os testes com a janela do navegador aberta.
+- `npm run test:atividade:list` — lista os cenários sem subir o Docker.
+- `npm run test:atividade:typecheck` — verifica a tipagem TypeScript da suíte da atividade.
+- `npm run test:atividade:report` — abre o relatório HTML da última execução.
+
+Antes de cada teste, o banco exclusivo `atividade_e2e` é limpo e restaurado com os dados de `database/seed.sql` (ou mantido vazio no teste de lista vazia), garantindo independência entre os cenários sem alterar o banco da demonstração. Caso o processo seja interrompido antes do encerramento automático, remova os contêineres com:
+
+```powershell
+docker compose -f compose.atividade.e2e.yml -p atividade-e2e down --remove-orphans
+```
+
 ## Desenvolvimento da API
 
 Na pasta `server`, execute:
